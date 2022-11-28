@@ -2,6 +2,8 @@ using Bassza.Api.Dtos;
 using Bassza.Api.Features;
 using Bassza.Api.Features.Processors;
 using Bassza.Features;
+using Bassza.Features.GoogleSheets;
+using Google.Apis.Sheets.v4.Data;
 using Serilog;
 
 namespace Bassza;
@@ -10,24 +12,22 @@ public class Main
 {
 
     private readonly Signals _signals;
-    private readonly ILogger _logger;
     private readonly Options _options;
+    private readonly SheetsApiManager _sheetsApiManager;
 
     public Main(Signals signals, 
         ILogger logger, 
-        Options options)
+        Options options, 
+        SheetsApiManager sheetsApiManager)
     {
         _signals = signals;
-        _logger = logger;
         _options = options;
+        _sheetsApiManager = sheetsApiManager;
     }
 
     public async Task Run()
     {
-        
-        Log.Logger = _logger;
-        
-        _logger.Information("Starting OLEMs Processor");
+        Log.Information("Starting OLEMs Processor");
 
         var olemsSession = Session.Create(new LoginDetailsDto()
         {
@@ -39,11 +39,11 @@ public class Main
 
         if (!loggedIn)
         {
-            _logger.Error("Incorrect Login Details");
-            _signals.ApplicationDone.Set();
+            Log.Error("Incorrect Login Details");
+            return;
         }
         
-        _logger.Information("Logged In");
+        Log.Information("Logged In");
 
         await Task.Delay(200);
 
@@ -60,9 +60,9 @@ public class Main
         var model = dataModel.CalculatePosition();
 
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
-        
-        _signals.ApplicationDone.Set();
-        
+
+        await _sheetsApiManager.UpdateDataModel(dataModel);
+
     }
     
 }

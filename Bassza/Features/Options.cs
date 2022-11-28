@@ -10,4 +10,8 @@ public class Options
     [Option('p', "password", Required = true, HelpText = "OLEMs Password")]
     public string Password { get; set; } = "";
     
+    
+    [Option('s', "google-sheet-id", Required = false, HelpText = "Google Sheet Id")]
+    public string? GoogleSheetId { get; set; }
+    
 }

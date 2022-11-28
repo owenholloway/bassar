@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Bassza;
 using Bassza.Features;
+using Bassza.Features.GoogleSheets;
 using CommandLine;
 using Serilog;
 using Serilog.Events;
@@ -26,13 +27,18 @@ builder.Register(r =>
     
 }).As<ILogger>().SingleInstance();
 
+builder.RegisterType<SetupLogger>().SingleInstance();
 builder.RegisterType<Signals>().SingleInstance();
 
+builder.RegisterType<SheetsApiManager>().SingleInstance();
 builder.RegisterType<Main>();
 
-var conainer = builder.Build();
+var container = builder.Build();
 
+container.Resolve<SetupLogger>().Run();
 
-conainer.Resolve<Main>().Run();
+await container.Resolve<SheetsApiManager>().TryConnect();
 
-conainer.Resolve<Signals>().ApplicationDone.WaitOne();
+await container.Resolve<Main>().Run();
+
+container.Resolve<Signals>().ApplicationDone.Set();
