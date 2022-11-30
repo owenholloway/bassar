@@ -32,10 +32,10 @@ revise:
     - main
   script:
     - num=0
-    - num=`expr $version_build + 1`
+    - num=`expr $version_revision + 1`
     - echo $num
-    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/version_build"
-    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_KEY" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/version_build" --form "value=$num"'
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/version_revision"
+    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_KEY" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/version_revision" --form "value=$num"'
 
 build-container:
   stage: build
