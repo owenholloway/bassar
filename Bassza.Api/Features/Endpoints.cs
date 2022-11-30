@@ -69,5 +69,24 @@ namespace Bassza.Api.Features
 
         };
 
+        public static EndPointDto Authorise2FAGet = new EndPointDto()
+        {
+            FunctionType = FunctionTypeEnum.GET,
+            Function = "Authorise-2FA.asp"
+        };
+        
+        public static EndPointDto Authorise2FAPost = new EndPointDto()
+        {
+            FunctionType = FunctionTypeEnum.POST,
+            Function = "Authorise-2FA.asp"
+        };
+        
+        public static EndPointDto AuthPHP = new EndPointDto()
+        {
+            FunctionType = FunctionTypeEnum.GET,
+            Function = "CORE/2fa/auth.php"
+        };
+
+
     }
 }

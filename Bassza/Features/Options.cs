@@ -14,4 +14,7 @@ public class Options
     [Option('s', "google-sheet-id", Required = false, HelpText = "Google Sheet Id")]
     public string? GoogleSheetId { get; set; }
     
+    [Option('k', "totp-key", Required = false, HelpText = "TOTP Key")]
+    public string? TotpKey { get; set; }
+    
 }

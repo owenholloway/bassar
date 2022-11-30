@@ -30,6 +30,7 @@ builder.RegisterType<SetupLogger>().SingleInstance();
 builder.RegisterType<Signals>().SingleInstance();
 
 builder.RegisterType<SheetsApiManager>().SingleInstance();
+builder.RegisterType<TotpManager>().SingleInstance();
 builder.RegisterType<Main>();
 
 var container = builder.Build();

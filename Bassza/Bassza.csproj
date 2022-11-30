@@ -15,6 +15,7 @@
       <PackageReference Include="Google.Apis.ServiceManagement.v1" Version="1.57.0.2812" />
       <PackageReference Include="Google.Apis.Sheets.v4" Version="1.57.0.2826" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+      <PackageReference Include="Opt.Net" Version="0.1.0.48" />
       <PackageReference Include="Serilog" Version="2.12.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     </ItemGroup>
@@ -27,6 +28,10 @@
       <None Update="apiKey.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Extensions" />
     </ItemGroup>
 
 </Project>

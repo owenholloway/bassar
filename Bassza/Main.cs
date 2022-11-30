@@ -14,15 +14,18 @@ public class Main
     private readonly Signals _signals;
     private readonly Options _options;
     private readonly SheetsApiManager _sheetsApiManager;
+    private TotpManager _totpManager;
 
     public Main(Signals signals, 
         ILogger logger, 
         Options options, 
-        SheetsApiManager sheetsApiManager)
+        SheetsApiManager sheetsApiManager, 
+        TotpManager totpManager)
     {
         _signals = signals;
         _options = options;
         _sheetsApiManager = sheetsApiManager;
+        _totpManager = totpManager;
     }
 
     public async Task Run()
@@ -35,7 +38,11 @@ public class Main
             Password = _options.Password
         });
 
-        var loggedIn = olemsSession.LoginOpen();
+        var consumeTestData = false;
+        
+        var loggedIn = consumeTestData;
+        
+        if (!loggedIn) loggedIn = olemsSession.LoginOpen(_totpManager.GetTotp());
 
         if (!loggedIn)
         {
@@ -44,21 +51,23 @@ public class Main
         }
         
         Log.Information("Logged In");
-
+        
         await Task.Delay(200);
 
         var dataModel = new OlemsDataModel();
         await Task.Delay(200);
-        await dataModel.ProcessBasicDetails(saveDataForTest: true, consumeTestData:true);
+        await dataModel.ProcessBasicDetails(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
-        await dataModel.ProcessPayments(saveDataForTest: true, consumeTestData:true);
+        await dataModel.ProcessPayments(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
-        await dataModel.ProcessMedicalReportResponse(saveDataForTest: true, consumeTestData:true);
+        await dataModel.ProcessMedicalReportResponse(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
-        await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: true);
+        await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: consumeTestData);
         
         var model = dataModel.CalculatePosition();
 
+        await _sheetsApiManager.UpdateFinancialPosition(model);
+        
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
 
         await _sheetsApiManager.UpdateDataModel(dataModel);
