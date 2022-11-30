@@ -66,10 +66,4 @@ run-job:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH/bassza:$version_major.$version_minor.$version_revision
-    - docker run \
-    -v /var/secrets/apiKey.json:/App/apiKey.json \
-    $CI_REGISTRY/$CI_PROJECT_PATH/bassza:$version_major.$version_minor.$version_revision \
-    -u $OLEMS_USER \
-    -p $OLEMS_PASSWORD \
-    -s $GOOGLE_SHEET_ID \
-    -k $TOTP_KEY \
+    - docker run -v /var/secrets/apiKey.json:/App/apiKey.json $CI_REGISTRY/$CI_PROJECT_PATH/bassza:$version_major.$version_minor.$version_revision -u $OLEMS_USER -p $OLEMS_PASSWORD -s $GOOGLE_SHEET_ID -k $TOTP_KEY
