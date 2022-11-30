@@ -59,6 +59,7 @@ run-job:
   stage: run
   only:
     - main
+    - scheduled
   before_script:
     - docker info
     - nslookup vulcan.lanceolata.com.au
