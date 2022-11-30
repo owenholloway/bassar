@@ -19,7 +19,6 @@ builder.Register(r =>
 
 builder.Register(r =>
 {
-    
     var obj = new LoggerConfiguration();
     obj.MinimumLevel.Debug();
     obj.WriteTo.Console();

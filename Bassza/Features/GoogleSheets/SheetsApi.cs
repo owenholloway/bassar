@@ -1,4 +1,5 @@
 using Bassza.Api.Dtos;
+using Bassza.Dtos.Financial;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
@@ -74,8 +75,119 @@ public class SheetsApiManager
         var emailList = dataModel.Participants.Select(value => value.EmailPrimary).Cast<object>().ToList();
         await UpdateRow("E", "Participants", emailList, "Email");
 
+        var payedBase1List = dataModel.Participants.Select(value => value.FinancialPosition.Payment1Complete).Cast<object>().ToList();
+        await UpdateRow("F", "Participants", payedBase1List, "Base 1");
+        var payedBase2List = dataModel.Participants.Select(value => value.FinancialPosition.Payment2Complete).Cast<object>().ToList();
+        await UpdateRow("G", "Participants", payedBase2List, "Base 2");
+        var payedBase3List = dataModel.Participants.Select(value => value.FinancialPosition.Payment3Complete).Cast<object>().ToList();
+        await UpdateRow("H", "Participants", payedBase3List, "Base 3");
+
+        var baseFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.BaseFeeSum).Cast<object>().ToList();
+        await UpdateRow("I", "Participants", baseFeeSumList, "Base Paid");
+        var baseFeeOwed = dataModel.Participants.Select(value => value.FinancialPosition.BaseFeeOwed).Cast<object>().ToList();
+        await UpdateRow("J", "Participants", baseFeeOwed, "Base Owed");
+        
+        var statusList = dataModel.Participants.Select(value => value.Status).Cast<object>().ToList();
+        await UpdateRow("K", "Participants", statusList, "Status"); 
+        
+        var ppList = dataModel.Participants.Select(value => value.PayingParticipant).Cast<object>().ToList();
+        await UpdateRow("L", "Participants", ppList, "PayingParticipant"); 
+       
+        
+        var payedExped1List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition1Complete).Cast<object>().ToList();
+        await UpdateRow("M", "Participants", payedExped1List, "Exped 1");
+        
+        var payedExped2List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition2Complete).Cast<object>().ToList();
+        await UpdateRow("N", "Participants", payedExped2List, "Exped 2");
+        
+        var expedFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeSum).Cast<object>().ToList();
+        await UpdateRow("P", "Participants", expedFeeSumList, "Exped Paid");
+        var expedFeeOwed = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeOwed).Cast<object>().ToList();
+        await UpdateRow("Q", "Participants", expedFeeOwed, "Exped Owed");
+        
+        // var payedExped3List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition3Complete).Cast<object>().ToList();
+        // await UpdateRow("O", "Participants", payedExped3List, "Exped 3");
+        
+        // var  = dataModel.Participants.Select(value => value.EmailPrimary).Cast<object>().ToList();
+        // await UpdateRow("E", "Participants", emailList, "Email");
 
     }
+
+
+    public async Task UpdateFinancialPosition(IntegratedPosition position)
+    {
+        var labelPosition = new List<object>()
+        {
+            "",
+            "No Payment",
+            "1st Payment",
+            "2nd Payment",
+            "3rd Payment",
+            "Total",
+            "",
+            "Total Paid",
+            "Total Owing"
+        };
+        await UpdateRow("B", "Financial", labelPosition, "");
+        
+        var staffPosition = new List<object>()
+        {
+            "",
+            position.StaffBasePayment.NoPaymentCount,
+            position.StaffBasePayment.Payment1Count,
+            position.StaffBasePayment.Payment2Count,
+            position.StaffBasePayment.Payment3Count,
+            position.StaffBasePayment.Participants,
+            "",
+            position.StaffBasePayment.TotalPaid,
+            position.StaffBasePayment.TotalOwed
+        };
+        await UpdateRow("C", "Financial", staffPosition, "Staff (Base)");
+        
+        var fullFeePosition = new List<object>()
+        {
+            "",
+            position.FullFeeBasePayment.NoPaymentCount,
+            position.FullFeeBasePayment.Payment1Count,
+            position.FullFeeBasePayment.Payment2Count,
+            position.FullFeeBasePayment.Payment3Count,
+            position.FullFeeBasePayment.Participants,
+            "",
+            position.FullFeeBasePayment.TotalPaid,
+            position.FullFeeBasePayment.TotalOwed
+        };
+        await UpdateRow("D", "Financial", fullFeePosition, "Full Fee (Base)");
+        
+        var staffExped = new List<object>()
+        {
+            "",
+            position.StaffExpeditionPayment.NoPaymentCount,
+            position.StaffExpeditionPayment.Payment1Count,
+            position.StaffExpeditionPayment.Payment2Count,
+            position.StaffExpeditionPayment.Payment3Count,
+            position.StaffBasePayment.Participants,
+            "",
+            position.StaffExpeditionPayment.TotalPaid,
+            position.StaffExpeditionPayment.TotalOwed
+        };
+        await UpdateRow("G", "Financial", staffPosition, "Staff (Exped)");
+        
+        var fullFeeExped = new List<object>()
+        {
+            "",
+            position.StaffExpeditionPayment.NoPaymentCount,
+            position.StaffExpeditionPayment.Payment1Count,
+            position.StaffExpeditionPayment.Payment2Count,
+            position.StaffExpeditionPayment.Payment3Count,
+            position.FullFeeBasePayment.Participants,
+            "",
+            position.StaffExpeditionPayment.TotalPaid,
+            position.StaffExpeditionPayment.TotalOwed
+        };
+        await UpdateRow("H", "Financial", fullFeePosition, "Full Fee (Exped)");
+        
+    }
+    
 
     private async Task UpdateRow(
         string column, 

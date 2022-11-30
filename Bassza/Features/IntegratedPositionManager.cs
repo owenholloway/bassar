@@ -23,11 +23,7 @@ public static class IntegratedPositionExtensions
         
         var fullFeePayees = dataModel
             .Participants
-            .Where(pt => !pt.Status.ToLower().Contains("not proceeding") 
-                         && !pt.Status.ToLower().Contains("withdrawn")
-                         && pt.EventId != 1
-                         && !pt.NameLast.ToLower().Contains("test")
-                         && !pt.Contingent.ToLower().Contains("aimmot")
+            .Where(pt => pt.PayingParticipant
                          && !(Math.Abs(pt.FinancialPosition.BaseFee - 600.00) < 0.1));
 
         
@@ -67,9 +63,9 @@ public static class IntegratedPositionExtensions
             NoPaymentCount = participants
                 .Count(pt => pt.FinancialPosition.NoBaseFeePayment),
             Payment1Count = participants
-                .Count(pt => pt.FinancialPosition.Payment1Complete),
+                .Count(pt => pt.FinancialPosition.Payment1Complete && !(pt.FinancialPosition.Payment2Complete || pt.FinancialPosition.Payment3Complete) ),
             Payment2Count = participants
-                .Count(pt => pt.FinancialPosition.Payment2Complete),
+                .Count(pt => pt.FinancialPosition.Payment2Complete&& !(pt.FinancialPosition.Payment3Complete)),
             Payment3Count = participants
                 .Count(pt => pt.FinancialPosition.Payment3Complete),
             TotalPaid = participants.Sum(pt => pt.FinancialPosition.BaseFeeSum),

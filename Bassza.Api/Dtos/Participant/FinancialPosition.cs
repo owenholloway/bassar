@@ -22,20 +22,20 @@ public class FinancialPosition
     public double Outstanding { get; set; } = 0.00;
 
     public double ExpeditionFeeSum => ExpeditionPayment1 + ExpeditionPayment2 + ExpeditionPayment3Tba;
-    public double ExpeditionFeeOwed => Expedition - ExpeditionFeeSum;
+    public double ExpeditionFeeOwed =>  Expedition - ExpeditionFeeSum < 0 ? 0 : Expedition - ExpeditionFeeSum;
 
-    public bool Expedition1Complete => ExpeditionFeeOwed < 0.5 * -Expedition;
-    public bool Expedition2Complete => ExpeditionFeeOwed < 1;
+    public bool Expedition1Complete => ExpeditionPayment1 > 40;
+    public bool Expedition2Complete => ExpeditionPayment2 > 40;
     public bool Expedition3Complete = false;
     
     public bool NoExpeditionFeePayment => !(Expedition1Complete || Expedition2Complete || Expedition3Complete);
     
     public double BaseFeeSum => Payment1 + Payment2 + Payment3;
-    public double BaseFeeOwed => BaseFeeSum - BaseFee;
-
-    public bool Payment1Complete => BaseFeeOwed < 0.66666 * -BaseFee;
-    public bool Payment2Complete => BaseFeeOwed < 0.33333 * -BaseFee;
-    public bool Payment3Complete => BaseFeeOwed < 1;
+    public double BaseFeeOwed => -(BaseFeeSum - BaseFee) < 0 ? 0 : -(BaseFeeSum - BaseFee);
+    
+    public bool Payment1Complete => Payment1 > 199;
+    public bool Payment2Complete => Payment1Complete && Payment2 > 199;
+    public bool Payment3Complete => Payment2Complete && Payment3 > 199;
     public bool NoBaseFeePayment => !(Payment1Complete || Payment2Complete || Payment3Complete);
 
 }
