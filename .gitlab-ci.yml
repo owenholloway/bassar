@@ -1,0 +1,58 @@
+image: docker:20.10.12
+
+variables:
+  # When you use the dind service, you must instruct Docker to talk with
+  # the daemon started inside of the service. The daemon is available
+  # with a network connection instead of the default
+  # /var/run/docker.sock socket. Docker 19.03 does this automatically
+  # by setting the DOCKER_HOST in
+  # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03/docker-entrypoint.sh#L23-L29
+  #
+  # The 'docker' hostname is the alias of the service container as described at
+  # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+  #
+  # Specify to Docker where to create the certificates. Docker
+  # creates them automatically on boot, and creates
+  # `/certs/client` to share between the service and job
+  # container, thanks to volume mount from config.toml
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:20.10.12
+
+stages:
+    - revise
+    - build
+    - deploy
+
+
+revise:
+  stage: revise
+  only:
+    - main
+  script:
+    - num=0
+    - num=`expr $version_build + 1`
+    - echo $num
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/version_build"
+    - 'docker run alpine/curl --request PUT --header "PRIVATE-TOKEN: $API_KEY" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/variables/version_build" --form "value=$num"'
+
+build-container:
+  stage: build
+  needs:
+  - revise
+  only:
+    - main
+  before_script:
+    - docker info
+    - nslookup vulcan.lanceolata.com.au
+    - nslookup conreg.lanceolata.com.au
+    - cd ./src/batcher/
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t jdkbase --no-cache ../pdrbase/jdk/.
+    - docker build -t pdrbase --no-cache ../pdrbase/final/.
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/bassza:latest .
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH/bassza:$version_major.$version_minor.$version_revision .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/bassza:latest
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH/bassza:$version_major.$version_minor.$version_revision
