@@ -41,13 +41,17 @@ public static class IntegratedPositionExtensions
         return new ExpeditionsPaymentSummary()
         {
             NoPaymentCount = participants
-                .Count(pt => pt.FinancialPosition.NoExpeditionFeePayment),
+                .Count(pt => !pt.FinancialPosition.Expedition1Complete 
+                             && pt.FinancialPosition.Expedition2Complete),
+            
             Payment1Count = participants
                 .Count(pt => pt.FinancialPosition.Expedition1Complete),
+            
             Payment2Count = participants
                 .Count(pt => pt.FinancialPosition.Expedition2Complete),
-            Payment3Count = participants
-                .Count(pt => pt.FinancialPosition.Expedition3Complete),
+
+            Payment3Count = 0,
+            
             TotalPaid = participants.Sum(pt => pt.FinancialPosition.ExpeditionFeeSum),
             TotalOwed = participants.Sum(pt => pt.FinancialPosition.ExpeditionFeeOwed)
         };

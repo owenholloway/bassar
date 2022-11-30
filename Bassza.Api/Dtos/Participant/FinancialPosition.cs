@@ -24,11 +24,10 @@ public class FinancialPosition
     public double ExpeditionFeeSum => ExpeditionPayment1 + ExpeditionPayment2 + ExpeditionPayment3Tba;
     public double ExpeditionFeeOwed =>  Expedition - ExpeditionFeeSum < 0 ? 0 : Expedition - ExpeditionFeeSum;
 
-    public bool Expedition1Complete => ExpeditionPayment1 > 40;
-    public bool Expedition2Complete => ExpeditionPayment2 > 40;
-    public bool Expedition3Complete = false;
-    
-    public bool NoExpeditionFeePayment => !(Expedition1Complete || Expedition2Complete || Expedition3Complete);
+    public bool Expedition1Complete => Expedition > 0 && ExpeditionFeeSum >= Expedition/2;
+    public bool Expedition2Complete => Expedition > 0 && ExpeditionFeeSum >= Expedition;
+
+    public bool NoExpeditionFeePayment => !(Expedition1Complete || Expedition2Complete);
     
     public double BaseFeeSum => Payment1 + Payment2 + Payment3;
     public double BaseFeeOwed => -(BaseFeeSum - BaseFee) < 0 ? 0 : -(BaseFeeSum - BaseFee);

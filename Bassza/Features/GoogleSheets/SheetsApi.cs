@@ -99,7 +99,7 @@ public class SheetsApiManager
         
         var payedExped2List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition2Complete).Cast<object>().ToList();
         await UpdateRow("N", "Participants", payedExped2List, "Exped 2");
-        
+
         var expedFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeSum).Cast<object>().ToList();
         await UpdateRow("P", "Participants", expedFeeSumList, "Exped Paid");
         var expedFeeOwed = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeOwed).Cast<object>().ToList();
@@ -170,7 +170,7 @@ public class SheetsApiManager
             position.StaffExpeditionPayment.TotalPaid,
             position.StaffExpeditionPayment.TotalOwed
         };
-        await UpdateRow("G", "Financial", staffPosition, "Staff (Exped)");
+        await UpdateRow("G", "Financial", staffExped, "Staff (Exped)");
         
         var fullFeeExped = new List<object>()
         {
@@ -184,7 +184,7 @@ public class SheetsApiManager
             position.StaffExpeditionPayment.TotalPaid,
             position.StaffExpeditionPayment.TotalOwed
         };
-        await UpdateRow("H", "Financial", fullFeePosition, "Full Fee (Exped)");
+        await UpdateRow("H", "Financial", fullFeeExped, "Full Fee (Exped)");
         
     }
     
