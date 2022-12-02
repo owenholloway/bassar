@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using Bassza.Api.Dtos;
 using Bassza.Api.Features;
 using Bassza.Api.Features.Processors;
@@ -47,7 +48,7 @@ public class Main
         if (!loggedIn)
         {
             Log.Error("Incorrect Login Details");
-            return;
+            throw new AuthenticationException("Login failed");
         }
         
         Log.Information("Logged In");
