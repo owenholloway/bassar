@@ -4,6 +4,7 @@ using Bassza.Api.Features;
 using Bassza.Api.Features.Processors;
 using Bassza.Features;
 using Bassza.Features.GoogleSheets;
+using Bassza.Features.Reporting;
 using Google.Apis.Sheets.v4.Data;
 using Serilog;
 
@@ -66,12 +67,18 @@ public class Main
         await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: consumeTestData);
         
         var model = dataModel.CalculatePosition();
-
+        await Task.Delay(1500);
         await _sheetsApiManager.UpdateFinancialPosition(model);
         
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
-
+        await Task.Delay(1500);
         await _sheetsApiManager.UpdateDataModel(dataModel);
+
+
+        var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
+        await Task.Delay(1500);
+        await _sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport);
+
 
     }
     

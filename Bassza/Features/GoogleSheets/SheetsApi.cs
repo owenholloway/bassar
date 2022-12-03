@@ -189,7 +189,7 @@ public class SheetsApiManager
     }
     
 
-    private async Task UpdateRow(
+    public async Task UpdateRow(
         string column, 
         string sheetName, 
         List<object> values, 
