@@ -56,10 +56,12 @@ public static class OffsiteDietaryExtensions
         await apiManager.UpdateRow("A", "OffsiteDietary", idList, "Id");
         var nameList = report.Select(pt => pt.ParticipantName).Cast<object>().ToList();
         await apiManager.UpdateRow("B", "OffsiteDietary", nameList, "Name");
+        var offsiteList = report.Select(pt => pt.Activity.Name).Cast<object>().ToList();
+        await apiManager.UpdateRow("c", "OffsiteDietary", offsiteList, "Activity");
         var dayList = report.Select(pt => pt.Activity.Day.DayOfWeek.ToString()).Cast<object>().ToList();
-        await apiManager.UpdateRow("C", "OffsiteDietary", dayList, "Day");
+        await apiManager.UpdateRow("D", "OffsiteDietary", dayList, "Day");
         var allergyList = report.Select(pt => pt.MedicalInformation.Name).Cast<object>().ToList();
-        await apiManager.UpdateRow("D", "OffsiteDietary", allergyList, "Dietary");
+        await apiManager.UpdateRow("E", "OffsiteDietary", allergyList, "Dietary");
         
     }
     
