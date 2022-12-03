@@ -175,14 +175,14 @@ public class SheetsApiManager
         var fullFeeExped = new List<object>()
         {
             "",
-            position.StaffExpeditionPayment.NoPaymentCount,
-            position.StaffExpeditionPayment.Payment1Count,
-            position.StaffExpeditionPayment.Payment2Count,
-            position.StaffExpeditionPayment.Payment3Count,
+            position.FullFeeExpeditionPayment.NoPaymentCount,
+            position.FullFeeExpeditionPayment.Payment1Count,
+            position.FullFeeExpeditionPayment.Payment2Count,
+            position.FullFeeExpeditionPayment.Payment3Count,
             position.FullFeeBasePayment.Participants,
             "",
-            position.StaffExpeditionPayment.TotalPaid,
-            position.StaffExpeditionPayment.TotalOwed
+            position.FullFeeExpeditionPayment.TotalPaid,
+            position.FullFeeExpeditionPayment.TotalOwed
         };
         await UpdateRow("H", "Financial", fullFeeExped, "Full Fee (Exped)");
         

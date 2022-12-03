@@ -33,7 +33,7 @@ public class Participant
 
     // Activities & Expeditions
     public string Expedition { get; set; } = "No Expedition";
-    public List<OffsiteActivity> OffsiteActivities = new List<OffsiteActivity>();
+    public readonly List<OffsiteActivity> OffsiteActivities = new();
 
     private double TotalOffsiteCost => OffsiteActivities.Sum(at => at.Cost);
     public bool OffsiteDiscrepancy => Math.Abs(TotalOffsiteCost - FinancialPosition.OffsiteHolds) > 0.1;

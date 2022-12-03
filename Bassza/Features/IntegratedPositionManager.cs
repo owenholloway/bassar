@@ -42,10 +42,10 @@ public static class IntegratedPositionExtensions
         {
             NoPaymentCount = participants
                 .Count(pt => !pt.FinancialPosition.Expedition1Complete 
-                             && pt.FinancialPosition.Expedition2Complete),
+                             && !pt.FinancialPosition.Expedition2Complete),
             
             Payment1Count = participants
-                .Count(pt => pt.FinancialPosition.Expedition1Complete),
+                .Count(pt => (pt.FinancialPosition.Expedition1Complete && !pt.FinancialPosition.Expedition2Complete)),
             
             Payment2Count = participants
                 .Count(pt => pt.FinancialPosition.Expedition2Complete),
