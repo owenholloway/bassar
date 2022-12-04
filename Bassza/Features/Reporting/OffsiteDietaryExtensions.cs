@@ -7,10 +7,10 @@ namespace Bassza.Features.Reporting;
 
 public static class OffsiteDietaryExtensions
 {
-    public static List<OffsiteDietary> ProcessOffsiteDietaries(this OlemsDataModel dataModel)
+    public static List<OffsiteInfo> ProcessOffsiteDietaries(this OlemsDataModel dataModel)
     {
 
-        var records = new List<OffsiteDietary>();
+        var records = new List<OffsiteInfo>();
 
         foreach (var dataModelParticipant in dataModel.Participants)
         {
@@ -26,7 +26,7 @@ public static class OffsiteDietaryExtensions
                 foreach (var medicalInformation in dietaries)
                 {
                     
-                    records.Add(new OffsiteDietary()
+                    records.Add(new OffsiteInfo()
                     {
                         ParticipantId = dataModelParticipant.EventId,
                         ParticipantName = dataModelParticipant.Name,
@@ -45,7 +45,7 @@ public static class OffsiteDietaryExtensions
     }
 
 
-    public static async Task UpdateOffsiteDietariesSheet(this SheetsApiManager apiManager, List<OffsiteDietary> report)
+    public static async Task UpdateOffsiteDietariesSheet(this SheetsApiManager apiManager, List<OffsiteInfo> report)
     {
         
         if (!apiManager.IsActive) return;

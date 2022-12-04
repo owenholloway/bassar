@@ -79,6 +79,9 @@ public class Main
         await Task.Delay(1500);
         await _sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport);
 
+        await Task.Delay(1500);
+        await _sheetsApiManager.UpdateOffsiteFullDaySheet(dataModel);
+
 
     }
     
