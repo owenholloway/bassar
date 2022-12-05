@@ -88,5 +88,12 @@ namespace Bassza.Api.Features
         };
 
 
+        public static EndPointDto MailingLabels = new EndPointDto()
+        {
+            FunctionType = FunctionTypeEnum.GET,
+            Function = "Report-mailingLabels.asp"
+        };
+
+
     }
 }

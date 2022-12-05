@@ -104,6 +104,82 @@ public static class BasicDetailsProcessor
         
     }
     
+        public static async Task ProcessMailingDetails(
+        this OlemsDataModel dataModel, 
+        string? overrideData = null, 
+        bool saveDataForTest = false,
+        bool consumeTestData = false)
+    {        
+        Log.Information("Getting Mailing Details");
+
+        var htmlData = "";
+
+        var consumedTestData = false;
+        
+        if (consumeTestData)
+        {
+            if (File.Exists("mailingDetails.html"))
+            {
+                htmlData = File.ReadAllText("mailingDetails.html");
+                consumedTestData = true;
+            }
+        }
+        
+        switch (consumedTestData)
+        {
+            case false when overrideData == null:
+            {
+                var reportRequest = new RequestDto()
+                {
+                    EndPointDto = Endpoints.MailingLabels
+                };
+        
+                var medicalReportResponse = reportRequest.RunRequest();
+                htmlData = await medicalReportResponse!.Content.ReadAsStringAsync();
+                if (saveDataForTest) await File.WriteAllTextAsync("mailingDetails.html", htmlData);
+                break;
+            }
+            case false:
+                htmlData = overrideData;
+                break;
+        }
+        
+        var htmlDoc = new HtmlDocument();
+        
+        htmlDoc.LoadHtml(htmlData);
+
+        var table = htmlDoc.DocumentNode
+            .ChildNodes.FindFirst("table");
+
+        foreach (var node in table.ChildNodes)
+        {
+            var participantInfo = node.ChildNodes;
+            if (participantInfo.Count < 2) continue;
+            
+            int idAsNo = 0;
+            try
+            {
+                var id = participantInfo[1].InnerHtml.TrimFormatting();
+                if (!TryParse(id, out idAsNo)) continue;
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"Error {e.Message}");
+                continue;
+            }
+            
+            var preferredName = participantInfo[11].InnerHtml.TrimFormatting();
+
+            dataModel.Participants
+                .FirstOrDefault(pt => pt.EventId == idAsNo)!
+                .NameFirst = preferredName;
+
+        }
+        
+        dataModel.Participants = dataModel.Participants.OrderBy(pt => pt.EventId).ToList();
+        
+    }
+    
     public static async Task ProcessPayments(
         this OlemsDataModel dataModel, 
         string? overrideData = null, 

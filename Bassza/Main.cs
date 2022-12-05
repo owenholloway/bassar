@@ -60,6 +60,8 @@ public class Main
         await Task.Delay(200);
         await dataModel.ProcessBasicDetails(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
+        await dataModel.ProcessMailingDetails(saveDataForTest: true, consumeTestData: consumeTestData);
+        await Task.Delay(200);
         await dataModel.ProcessPayments(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
         await dataModel.ProcessMedicalReportResponse(saveDataForTest: true, consumeTestData: consumeTestData);
@@ -78,7 +80,7 @@ public class Main
         var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
         await Task.Delay(1500);
         await _sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport);
-
+        
         await Task.Delay(1500);
         await _sheetsApiManager.UpdateOffsiteFullDaySheet(dataModel);
 
