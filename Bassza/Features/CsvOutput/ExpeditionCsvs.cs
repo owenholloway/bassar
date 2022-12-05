@@ -1,6 +1,6 @@
 namespace Bassza.Features.CsvOutput;
 
-public class ExpeditionCsvs
+public static class ExpeditionCsvs
 {
     
 }
