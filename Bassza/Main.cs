@@ -67,23 +67,30 @@ public class Main
         await dataModel.ProcessMedicalReportResponse(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
         await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: consumeTestData);
-        
+
         var model = dataModel.CalculatePosition();
-        await Task.Delay(1500);
+        await Task.Delay(15000);
         await _sheetsApiManager.UpdateFinancialPosition(model);
+        Log.Information("UpdateFinancialPosition");
         
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
-        await Task.Delay(1500);
+        await Task.Delay(15000);
         await _sheetsApiManager.UpdateDataModel(dataModel);
-
-
-        var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
-        await Task.Delay(1500);
-        await _sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport);
+        Log.Information("UpdateDataModel");
         
-        await Task.Delay(1500);
+        var fullDietary = dataModel.ProcessDietaries();
+        await Task.Delay(15000);
+        await _sheetsApiManager.UpdateDietariesSheet(fullDietary);
+        Log.Information("UpdateDietariesSheet");
+        
+        var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
+        await Task.Delay(15000);
+        await _sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport);
+        Log.Information("UpdateOffsiteDietariesSheet");
+        
+        await Task.Delay(15000);
         await _sheetsApiManager.UpdateOffsiteFullDaySheet(dataModel);
-
+        Log.Information("UpdateOffsiteFullDaySheet");
 
     }
     

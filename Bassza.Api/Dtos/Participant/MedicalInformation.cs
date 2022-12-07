@@ -7,22 +7,22 @@ public class MedicalInformation
     public string Name { get; set; } = "Undefined";
     
     // Medical Conditions
-    public string? FurtherInformation = "";
+    public string? FurtherInformation { get; set; } = string.Empty;
     
     // Medications
-    public string? Dosage { get; set; }
-    public string? MethodOfAdministration { get; set; }
+    public string? Dosage { get; set; } = string.Empty;
+    public string? MethodOfAdministration { get; set; } = string.Empty;
     
     // Medical Aids
-    public string? Reason { get; set; }
+    public string? Reason { get; set; } = string.Empty;
     
     // Allergies
-    public string? Reaction { get; set; }
-    public string? Treatment { get; set; }
+    public string? Reaction { get; set; } = string.Empty;
+    public string? Treatment { get; set; } = string.Empty;
     
     // Dietary
-    public string? DietCode { get; set; }
-    public string? Information { get; set; }
+    public string? DietCode { get; set; } = string.Empty;
+    public string? Information { get; set; } = string.Empty;
 
 
 }
