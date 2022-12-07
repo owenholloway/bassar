@@ -3,6 +3,7 @@ using Bassza.Api.Dtos;
 using Bassza.Api.Features;
 using Bassza.Api.Features.Processors;
 using Bassza.Features;
+using Bassza.Features.CsvOutput;
 using Bassza.Features.GoogleSheets;
 using Bassza.Features.Reporting;
 using Google.Apis.Sheets.v4.Data;
@@ -40,7 +41,7 @@ public class Main
             Password = _options.Password
         });
 
-        var consumeTestData = false;
+        var consumeTestData = true;
         
         var loggedIn = consumeTestData;
         
@@ -70,6 +71,9 @@ public class Main
         await Task.Delay(200);
         await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: consumeTestData);
 
+        await Task.Delay(200);
+        await dataModel.ProcessOffsiteExpeditions(saveDataForTest: true, consumeTestData: consumeTestData);
+        
         var model = dataModel.CalculatePosition();
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
         var fullDietary = dataModel.ProcessDietaries();
