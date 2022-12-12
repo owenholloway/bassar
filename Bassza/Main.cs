@@ -40,7 +40,7 @@ public class Main
             Password = _options.Password
         });
 
-        var consumeTestData = true;
+        var consumeTestData = false;
         
         var loggedIn = consumeTestData;
         
