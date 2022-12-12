@@ -2,6 +2,7 @@ using Bassza.Api.Dtos;
 using Bassza.Api.Dtos.Participant;
 using Bassza.Dtos.Financial;
 using Bassza.Features.GoogleSheets;
+using Serilog;
 
 namespace Bassza.Features.Reporting;
 
@@ -82,9 +83,11 @@ public static class DietaryExtensions
 
     public static async Task UpdateOffsiteDietariesSheet(this SheetsApiManager apiManager, List<OffsiteInfo> report)
     {
-        
+        await Signals.Requestors.WaitAsync();
         if (!apiManager.IsActive) return;
 
+        Log.Information("UpdateOffsiteDietariesSheet Start");
+        
         report = report.OrderBy(pt => pt.ParticipantId).ToList();
         
         var idList = report.Select(pt => pt.ParticipantId).Cast<object>().ToList();
@@ -98,13 +101,18 @@ public static class DietaryExtensions
         var allergyList = report.Select(pt => pt.MedicalInformation.Name).Cast<object>().ToList();
         await apiManager.UpdateRow("E", "OffsiteDietary", allergyList, "Dietary");
         
+        Log.Information("UpdateOffsiteDietariesSheet End");
+        Signals.ResetRequestor();
+        
     }
     
     public static async Task UpdateDietariesSheet(this SheetsApiManager apiManager, List<OffsiteInfo> report)
     {
-        
+        await Signals.Requestors.WaitAsync();
         if (!apiManager.IsActive) return;
-
+        
+        Log.Information("UpdateDietariesSheet Start");
+        
         report = report.OrderBy(pt => pt.ParticipantId).ToList();
         
         var idList = report.Select(pt => pt.ParticipantId).Cast<object>().ToList();
@@ -129,7 +137,10 @@ public static class DietaryExtensions
         
         var treatmentList = report.Select(pt => pt.MedicalInformation.Treatment).Cast<object>().ToList();
         await apiManager.UpdateRow("G", "FullDietary", treatmentList, "Treatment");
-
+        
+        Log.Information("UpdateDietariesSheet End");
+        Signals.ResetRequestor();
+        
     }
     
 }   

@@ -40,7 +40,7 @@ public class Main
             Password = _options.Password
         });
 
-        var consumeTestData = false;
+        var consumeTestData = true;
         
         var loggedIn = consumeTestData;
         
@@ -69,28 +69,24 @@ public class Main
         await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: consumeTestData);
 
         var model = dataModel.CalculatePosition();
-        await Task.Delay(15000);
-        await _sheetsApiManager.UpdateFinancialPosition(model);
-        Log.Information("UpdateFinancialPosition");
-        
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
-        await Task.Delay(15000);
-        await _sheetsApiManager.UpdateDataModel(dataModel);
-        Log.Information("UpdateDataModel");
-        
         var fullDietary = dataModel.ProcessDietaries();
-        await Task.Delay(15000);
-        await _sheetsApiManager.UpdateDietariesSheet(fullDietary);
-        Log.Information("UpdateDietariesSheet");
-        
         var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
-        await Task.Delay(15000);
-        await _sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport);
-        Log.Information("UpdateOffsiteDietariesSheet");
+
+        var updateTasks = new List<Task>();
         
         await Task.Delay(15000);
-        await _sheetsApiManager.UpdateOffsiteFullDaySheet(dataModel);
-        Log.Information("UpdateOffsiteFullDaySheet");
+
+        updateTasks.Add(_sheetsApiManager.UpdateFinancialPosition(model));
+        updateTasks.Add(_sheetsApiManager.UpdateDataModel(dataModel));
+        updateTasks.Add(_sheetsApiManager.UpdateDietariesSheet(fullDietary));
+        updateTasks.Add(_sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport));
+        updateTasks.Add(_sheetsApiManager.UpdateOffsiteFullDaySheet(dataModel));
+        
+        foreach (var updateTask in updateTasks)
+        {
+            await updateTask.WaitAsync(new CancellationToken());
+        }
 
     }
     

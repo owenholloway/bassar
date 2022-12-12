@@ -58,7 +58,9 @@ public class SheetsApiManager
 
     public async Task UpdateDataModel(OlemsDataModel dataModel)
     {
+        await Signals.Requestors.WaitAsync();
         if (!IsActive) return;
+        Log.Information("UpdateDataModel Start");
         
         var idList = dataModel.Participants.Select(value => value.EventId).Cast<object>().ToList();
         await UpdateRow("A", "Participants", idList, "Id");
@@ -111,11 +113,17 @@ public class SheetsApiManager
         // var  = dataModel.Participants.Select(value => value.EmailPrimary).Cast<object>().ToList();
         // await UpdateRow("E", "Participants", emailList, "Email");
 
+        
+        Log.Information("UpdateDataModel End");
+        Signals.ResetRequestor();
+        
     }
 
 
     public async Task UpdateFinancialPosition(IntegratedPosition position)
     {
+        await Signals.Requestors.WaitAsync();
+        Log.Information("UpdateFinancialPosition Start");
         var labelPosition = new List<object>()
         {
             "",
@@ -185,7 +193,10 @@ public class SheetsApiManager
             position.FullFeeExpeditionPayment.TotalOwed
         };
         await UpdateRow("H", "Financial", fullFeeExped, "Full Fee (Exped)");
-        
+
+        Log.Information("UpdateFinancialPosition End");
+        Signals.ResetRequestor();
+
     }
     
 

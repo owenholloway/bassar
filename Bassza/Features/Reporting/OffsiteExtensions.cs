@@ -2,6 +2,7 @@ using Bassza.Api.Dtos;
 using Bassza.Api.Dtos.Participant;
 using Bassza.Dtos.Financial;
 using Bassza.Features.GoogleSheets;
+using Serilog;
 
 namespace Bassza.Features.Reporting;
 
@@ -9,7 +10,8 @@ public static class OffsiteExtensions
 {
     public static async Task UpdateOffsiteFullDaySheet(this SheetsApiManager apiManager, OlemsDataModel dataModel)
     {
-        
+        await Signals.Requestors.WaitAsync();
+        Log.Information("UpdateOffsiteFullDaySheet Start");
         var report = dataModel
             .Participants
             .Where(pt => pt.OffsiteActivities
@@ -42,6 +44,10 @@ public static class OffsiteExtensions
         await apiManager.UpdateRow("c", "OffsiteFullDay", offsiteList, "Activity");
         var dayList = model.Select(pt => pt.Activity.Day.DayOfWeek.ToString()).Cast<object>().ToList();
         await apiManager.UpdateRow("D", "OffsiteFullDay", dayList, "Day");
+        
+        
+        Log.Information("UpdateOffsiteFullDaySheet End");
+        Signals.ResetRequestor();
         
     }
 }
