@@ -60,6 +60,7 @@ run-job:
   only:
     - main
     - scheduled
+  timeout: 15m
   before_script:
     - docker info
     - nslookup vulcan.lanceolata.com.au
