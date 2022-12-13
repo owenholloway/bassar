@@ -74,14 +74,13 @@ public class Main
         var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
 
         var updateTasks = new List<Task>();
-        
-        await Task.Delay(15000);
 
         updateTasks.Add(_sheetsApiManager.UpdateFinancialPosition(model));
         updateTasks.Add(_sheetsApiManager.UpdateDataModel(dataModel));
         updateTasks.Add(_sheetsApiManager.UpdateDietariesSheet(fullDietary));
         updateTasks.Add(_sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport));
         updateTasks.Add(_sheetsApiManager.UpdateOffsiteFullDaySheet(dataModel));
+        updateTasks.Add(_sheetsApiManager.UpdateOffsiteTourDietariesSheet(offSiteDietaryReport));
         
         foreach (var updateTask in updateTasks)
         {

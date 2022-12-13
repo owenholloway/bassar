@@ -20,6 +20,7 @@ public static class DietaryExtensions
                     .MedicalInformation
                     .Where(dt => dt.MedicalInformationType == MedicalInformationType.DietaryRequirements
                                  || (dt.MedicalInformationType == MedicalInformationType.Allergies && dt.Name.Contains("Foods:")));
+            
             if (!dietaries.Any()) continue;
 
             foreach (var offsiteActivity in dataModelParticipant.OffsiteActivities)
@@ -102,6 +103,43 @@ public static class DietaryExtensions
         await apiManager.UpdateRow("E", "OffsiteDietary", allergyList, "Dietary");
         
         Log.Information("UpdateOffsiteDietariesSheet End");
+        Signals.ResetRequestor();
+        
+    }
+    
+    
+    public static async Task UpdateOffsiteTourDietariesSheet(this SheetsApiManager apiManager, List<OffsiteInfo> reportIn)
+    {
+        await Signals.Requestors.WaitAsync();
+        if (!apiManager.IsActive) return;
+
+        Log.Information("UpdateOffsiteTourDietariesSheet Start");
+
+        var filterList = new List<string>()
+        {
+            "Tamar Valley Wine Tour",
+            "NW Food Tour",
+            "Day Trip - Stanley",
+            "NW Brewery Tour"
+        };
+        
+        var report = reportIn
+            .Where(pt => filterList.Any(lt => lt.Equals(pt.Activity.Name)))
+            .OrderBy(pt => pt.Activity.Name)
+            .ThenBy(pt => pt.Activity.Day)
+            .ThenBy(pt => pt.ParticipantId)
+             .ToList();
+        
+        var idList = report.Select(pt => pt.ParticipantId).Cast<object>().ToList();
+        await apiManager.UpdateRow("A", "OffsiteDietaryAnonTours", idList, "Id");
+        var offsiteList = report.Select(pt => pt.Activity.Name).Cast<object>().ToList();
+        await apiManager.UpdateRow("B", "OffsiteDietaryAnonTours", offsiteList, "Activity");
+        var dayList = report.Select(pt => pt.Activity.Day.DayOfWeek.ToString()).Cast<object>().ToList();
+        await apiManager.UpdateRow("C", "OffsiteDietaryAnonTours", dayList, "Day");
+        var allergyList = report.Select(pt => pt.MedicalInformation.Name).Cast<object>().ToList();
+        await apiManager.UpdateRow("D", "OffsiteDietaryAnonTours", allergyList, "Dietary");
+        
+        Log.Information("UpdateOffsiteTourDietariesSheet End");
         Signals.ResetRequestor();
         
     }
