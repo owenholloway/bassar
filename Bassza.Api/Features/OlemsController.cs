@@ -74,6 +74,7 @@ namespace Bassza.Api.Features
             
             var client = new HttpClient(handler);
 
+            client.Timeout = TimeSpan.FromMinutes(5);
             client.BaseAddress = new Uri($"https://{Endpoints.BaseUrl}");
             
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
