@@ -14,19 +14,15 @@ public static class IntegratedPositionExtensions
         
         var staffPayees = dataModel
             .Participants
-            .Where(pt => Math.Abs(pt.FinancialPosition.BaseFee - 600) < 0.1
-                         && pt.FinancialPosition.Expedition > -1);
+            .Where(pt => pt.PayingParticipant && pt.IsStaff);
         var staffParticipants = staffPayees as Participant[] ?? staffPayees.ToArray();
-
+        
         obj.StaffBasePayment = staffParticipants.ResolveBasePayment();
         obj.StaffExpeditionPayment = staffParticipants.ResolveExpeditions();
         
         var fullFeePayees = dataModel
             .Participants
-            .Where(pt => pt.PayingParticipant
-                         && !(Math.Abs(pt.FinancialPosition.BaseFee - 600.00) < 0.1));
-
-        
+            .Where(pt => pt.PayingParticipant && !pt.IsStaff);
         var fullFeeParticipants = fullFeePayees as Participant[] ?? fullFeePayees.ToArray();
         
         obj.FullFeeBasePayment = fullFeeParticipants.ResolveBasePayment();
@@ -41,18 +37,21 @@ public static class IntegratedPositionExtensions
         return new ExpeditionsPaymentSummary()
         {
             NoPaymentCount = participants
-                .Count(pt => !pt.FinancialPosition.Expedition1Complete 
-                             && !pt.FinancialPosition.Expedition2Complete),
+                .Count(pt => pt.FinancialPosition.NoExpeditionFeePayment),
             
             Payment1Count = participants
-                .Count(pt => (pt.FinancialPosition.Expedition1Complete && !pt.FinancialPosition.Expedition2Complete)),
+                .Count(pt => pt.FinancialPosition.Expedition1Complete 
+                             && !pt.FinancialPosition.Expedition2Complete
+                             && !pt.FinancialPosition.Expedition3Complete),
             
             Payment2Count = participants
-                .Count(pt => pt.FinancialPosition.Expedition2Complete),
+                .Count(pt => pt.FinancialPosition.Expedition2Complete
+                             && !pt.FinancialPosition.Expedition3Complete),
 
-            Payment3Count = 0,
+            Payment3Count = participants
+                .Count(pt => pt.FinancialPosition.Expedition3Complete),
             
-            TotalPaid = participants.Sum(pt => pt.FinancialPosition.ExpeditionFeeSum),
+            TotalPaid = participants.Sum(pt => pt.FinancialPosition.ExpeditionFeeCompletedSum),
             TotalOwed = participants.Sum(pt => pt.FinancialPosition.ExpeditionFeeOwed)
         };
         
@@ -72,7 +71,7 @@ public static class IntegratedPositionExtensions
                 .Count(pt => pt.FinancialPosition.Payment2Complete&& !(pt.FinancialPosition.Payment3Complete)),
             Payment3Count = participants
                 .Count(pt => pt.FinancialPosition.Payment3Complete),
-            TotalPaid = participants.Sum(pt => pt.FinancialPosition.BaseFeeSum),
+            TotalPaid = participants.Sum(pt => pt.FinancialPosition.BaseFeeCompletedSum),
             TotalOwed = participants.Sum(pt => pt.FinancialPosition.BaseFeeOwed)
         };
 

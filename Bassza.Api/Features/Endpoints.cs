@@ -99,6 +99,12 @@ namespace Bassza.Api.Features
             FunctionType = FunctionTypeEnum.GET,
             Function = "Report-PaymentPayWay.asp"
         };
+        
+        public static EndPointDto Payments = new EndPointDto()
+        {
+            FunctionType = FunctionTypeEnum.GET,
+            Function = "Report-Payments.asp"
+        };
 
     }
 }

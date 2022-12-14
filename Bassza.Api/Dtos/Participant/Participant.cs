@@ -12,14 +12,14 @@ public class Participant
     public string Name => NameLast + ", " + NameFirst;
 
     public bool PayingParticipant => !Status.ToLower().Contains("not proceeding")
-                                    && !Status.ToLower().Contains("withdrawn")
-                                    && !Status.ToLower().Contains("initial")
-                                    && EventId != 1
-                                    && !NameLast.ToLower().Contains("test")
-                                    && !Contingent.ToLower().Contains("aimmot")
-                                    && FinancialPosition.Expedition > -1;
+                                     && !Status.ToLower().Contains("withdrawn")
+                                     && !Status.ToLower().Contains("initial")
+                                     && EventId != 1
+                                     && EventId != 3
+                                     && !Contingent.ToLower().Contains("aimmot")
+                                     && FinancialPosition.BaseFee > 10;
 
-    public bool IsStaff => PayingParticipant && (DateOfBirth - DateTime.Parse("2022-12-30T13:00:00.000Z")).Days > 9490;
+    public bool IsStaff => FinancialPosition.BaseFee is > 599 and < 601;
     
     public DateTime DateOfBirth { get; set; } = DateTime.MinValue;
 

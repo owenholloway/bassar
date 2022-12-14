@@ -84,7 +84,7 @@ public class SheetsApiManager
         var payedBase3List = dataModel.Participants.Select(value => value.FinancialPosition.Payment3Complete).Cast<object>().ToList();
         await UpdateRow("H", "Participants", payedBase3List, "Base 3");
 
-        var baseFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.BaseFeeSum).Cast<object>().ToList();
+        var baseFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.BaseFeeCompletedSum).Cast<object>().ToList();
         await UpdateRow("I", "Participants", baseFeeSumList, "Base Paid");
         var baseFeeOwed = dataModel.Participants.Select(value => value.FinancialPosition.BaseFeeOwed).Cast<object>().ToList();
         await UpdateRow("J", "Participants", baseFeeOwed, "Base Owed");
@@ -102,7 +102,10 @@ public class SheetsApiManager
         var payedExped2List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition2Complete).Cast<object>().ToList();
         await UpdateRow("N", "Participants", payedExped2List, "Exped 2");
 
-        var expedFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeSum).Cast<object>().ToList();
+        var payedExped3List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition3Complete).Cast<object>().ToList();
+        await UpdateRow("O", "Participants", payedExped2List, "Exped 3");
+        
+        var expedFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeCompletedSum).Cast<object>().ToList();
         await UpdateRow("P", "Participants", expedFeeSumList, "Exped Paid");
         var expedFeeOwed = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeOwed).Cast<object>().ToList();
         await UpdateRow("Q", "Participants", expedFeeOwed, "Exped Owed");

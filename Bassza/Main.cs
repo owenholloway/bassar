@@ -40,7 +40,7 @@ public class Main
             Password = _options.Password
         });
 
-        var consumeTestData = false;
+        var consumeTestData = true;
         
         var loggedIn = consumeTestData;
         
@@ -61,8 +61,10 @@ public class Main
         await dataModel.ProcessBasicDetails(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
         await dataModel.ProcessMailingDetails(saveDataForTest: true, consumeTestData: consumeTestData);
+        // await Task.Delay(200);
+        // await dataModel.ProcessPaymentsExtended(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
-        await dataModel.ProcessPayments(saveDataForTest: true, consumeTestData: consumeTestData);
+        await dataModel.ProcessPayment(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
         await dataModel.ProcessMedicalReportResponse(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
@@ -72,7 +74,7 @@ public class Main
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
         var fullDietary = dataModel.ProcessDietaries();
         var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
-
+        
         var updateTasks = new List<Task>();
 
         updateTasks.Add(_sheetsApiManager.UpdateFinancialPosition(model));
