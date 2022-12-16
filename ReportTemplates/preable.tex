@@ -1,22 +1,23 @@
-\usepackage{csvsimple}
+\usepackage{subcaption}
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{array,booktabs,csvsimple,longtable,tabularx}
+\usepackage{hhline}
 
 \newcommand{\lat}{\selectlanguage{english}}
-
-\makeatletter
-\csvset{
-	autotabularcenter/.style={
-		file=#1,
-		after head=\csv@pretable\begin{tabular}{|*{\csv@columncount}{c|}}\csv@tablehead,
-			table head=\hline\csvlinetotablerow\\\hline,
-			late after line=\\,
-			table foot=\\\hline,
-			late after last line=\csv@tablefoot\end{tabular}\csv@posttable,
-		command=\csvlinetotablerow},
-}
-\makeatother
-\newcommand{\csvautotabularcenter}[2][]{\csvloop{autotabularcenter={#2},#1}}
 
 \usepackage{fontspec}
 \setmainfont{[NunitoSans-Regular.ttf]}
 
-\pagebreak
+\usepackage{layout}
+
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total={170mm,257mm},
+	left=10mm,
+	top=10mm,
+	right=10mm,
+	bottom=10mm
+}

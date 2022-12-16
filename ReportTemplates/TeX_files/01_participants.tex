@@ -4,9 +4,21 @@
 	\end{Large}
 \end{center}
 
-\begin{center}
-	\csvautotabularcenter{./TeX_files/example.csv}
-\end{center}
+\def\arraystretch{1.25}%
+\begin{table}[htb]
+	\centering
+	\large
+	\setlength\tabcolsep{2pt}
+	\begin{tabularx}{\textwidth}{c @{\extracolsep{\fill}} ccc}
+		\textbf{Moot Id}                             	 & \textbf{Name (First)} 		& \textbf{Name (Last)} 		& \textbf{Contingent} \\ \hline
+		\csvreader[late after line=\\\midrule,late after last line=\\\bottomrule]
+		{./TeX_files/example.csv}
+		{}
+		{\csvcoli & \csvcolii & \csvcoliii & \csvcoliv}
+		
+	\end{tabularx}
+\end{table}
+
 
 \newpage
 
@@ -15,3 +27,4 @@
 		\underline{Notes}
 	\end{Large}
 \end{center}
+
