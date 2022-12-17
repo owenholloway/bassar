@@ -1,5 +1,6 @@
 using System.Security.Authentication;
 using Bassza.Api.Dtos;
+using Bassza.Api.Dtos.Participant;
 using Bassza.Api.Features;
 using Bassza.Api.Features.Processors;
 using Bassza.Features;
@@ -74,10 +75,20 @@ public class Main
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
         var fullDietary = dataModel.ProcessDietaries();
         var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
+
+        var allPaymentsGrouped = dataModel
+            .Participants
+            .Select(pt => pt.FinancialPosition)
+            .SelectMany(fp => fp.Payments);
         
+        var debitedPayments = allPaymentsGrouped
+            .Where(pt => pt.ReceivedValue != null && pt.ReceivedDate != null)
+            .ToList();
+
         var updateTasks = new List<Task>();
 
         updateTasks.Add(_sheetsApiManager.UpdateFinancialPosition(model));
+        updateTasks.Add(_sheetsApiManager.UpdateDebitedPayments(debitedPayments));
         updateTasks.Add(_sheetsApiManager.UpdateDataModel(dataModel));
         updateTasks.Add(_sheetsApiManager.UpdateDietariesSheet(fullDietary));
         updateTasks.Add(_sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport));

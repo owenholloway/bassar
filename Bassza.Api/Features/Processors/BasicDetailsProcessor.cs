@@ -288,6 +288,8 @@ public static class BasicDetailsProcessor
                         var note = paymentsTable.ChildNodes[resultNo]
                             .ChildNodes[13].InnerText.TrimFormatting();
 
+                        if (dueDate.Length < 5) dueDate = "31-Dec-2022";
+                        
                         var payment = new Payment()
                         {
                             PaymentName = name,
@@ -299,7 +301,7 @@ public static class BasicDetailsProcessor
                         
                         if (receivedDate.Length > 5)
                         {
-                            payment.ReceivedDate = DateOnly.Parse(dueDate);
+                            payment.ReceivedDate = DateOnly.Parse(receivedDate);
                         }
 
                         if (receivedValue.Length > 3)
