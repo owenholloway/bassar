@@ -79,6 +79,10 @@ public class Main
         var fullDietary = dataModel.ProcessDietaries();
         var offSiteDietaryReport = dataModel.ProcessOffsiteDietaries();
         
+        dataModel.GenerateExpeditionCsvs();
+        
+        return;
+        
         var updateTasks = new List<Task>();
 
         updateTasks.Add(_sheetsApiManager.UpdateFinancialPosition(model));

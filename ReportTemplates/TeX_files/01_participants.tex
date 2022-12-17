@@ -4,21 +4,21 @@
 	\end{Large}
 \end{center}
 
-\def\arraystretch{1.25}%
 \begin{table}[htb]
 	\centering
-	\large
-	\setlength\tabcolsep{2pt}
-	\begin{tabularx}{\textwidth}{c @{\extracolsep{\fill}} ccc}
-		\textbf{Moot Id}                             	 & \textbf{Name (First)} 		& \textbf{Name (Last)} 		& \textbf{Contingent} \\ \hline
+	\setlength\tabcolsep{5pt}
+	\renewcommand{\arraystretch}{1.15}
+	\begin{tabularx}{\textwidth}{c @{\extracolsep{\fill}} cccc}
+		\textbf{Moot Id}                             	 & \textbf{Name (First)} 		& \textbf{Name (Last)} 		& \textbf{Contingent} & Note \\ \hline
 		\csvreader[late after line=\\\midrule,late after last line=\\\bottomrule]
-		{./TeX_files/example.csv}
+		{./TeX_files/Explorenipaluna.participants.csv}
 		{}
-		{\csvcoli & \csvcolii & \csvcoliii & \csvcoliv}
+		{\csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv}
 		
 	\end{tabularx}
 \end{table}
 
+Note that first name has been filled using preffered name. If legal first name is needed please confirm with participant.
 
 \newpage
 
@@ -28,3 +28,16 @@
 	\end{Large}
 \end{center}
 
+\begin{table}[htb]
+	\centering
+	\setlength\tabcolsep{5pt}
+	\renewcommand{\arraystretch}{1.15}
+	\begin{xltabular}{\textwidth}{c @{\extracolsep{\fill}} cccc}
+		\textbf{Moot Id}                             	 & \textbf{Name (First)} 		& \textbf{Name (Last)} 		& \textbf{Contingent} & Note \\ \hline
+		\csvreader[late after line=\\\midrule,late after last line=\\\bottomrule]
+		{./TeX_files/Explorenipaluna.notes.csv}
+		{}
+		{\csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv}
+		
+	\end{xltabular}
+\end{table}
