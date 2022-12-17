@@ -1,4 +1,6 @@
+using System.Collections.Immutable;
 using Bassza.Api.Dtos;
+using Bassza.Api.Dtos.Participant;
 using Bassza.Dtos.Financial;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -224,6 +226,35 @@ public class SheetsApiManager
         var result = await updateRequest.ExecuteAsync();
     }
 
+    
+    public async Task UpdateDebitedPayments(List<Payment> payments)
+    {
+        payments.Sort((x, y)
+                => x.ReceivedDate!.Value.CompareTo(y.ReceivedDate!.Value));
+        
+        var dateList = payments.Select(pt => ((DateOnly)pt.ReceivedDate!)
+            .ToString("yyyy/MM/dd")).Cast<object>().ToList();
+        
+        var valueList = payments.Select(pt => pt.ReceivedValue)
+            .Cast<object>().ToList();
+        
+        var itemList = payments.Select(pt => pt.PaymentName)
+            .Cast<object>().ToList();
+        
+        await Signals.Requestors.WaitAsync();
+
+        if (!IsActive) return;
+        Log.Information("UpdateDebitedPayments Start");
+        
+        await UpdateRow("A", "DebitedPayments", dateList, "Received");
+        await UpdateRow("B", "DebitedPayments", valueList, "Value");
+        await UpdateRow("C", "DebitedPayments", itemList, "Item");
+
+        Log.Information("UpdateDebitedPayments End");
+        Signals.ResetRequestor();
+        
+    }
+    
     private async Task SetColumnName(
         string column, 
         string sheetName,
