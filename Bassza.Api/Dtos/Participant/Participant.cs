@@ -33,6 +33,8 @@ public class Participant
 
     // Activities & Expeditions
     public string Expedition { get; set; } = "No Expedition";
+    public string ExpeditionUnit { get; set; } = "N/A";
+
     public readonly List<OffsiteActivity> OffsiteActivities = new();
 
     private double TotalOffsiteCost => OffsiteActivities.Sum(at => at.Cost);

@@ -109,4 +109,102 @@ public static class ActivitiesDetailsProcessor
         }
 
     }
+    
+        
+        public static async Task ProcessOffsiteExpeditions(
+        this OlemsDataModel dataModel, 
+        string? overrideData = null, 
+        bool saveDataForTest = false,
+        bool consumeTestData = false)
+    {        
+        Log.Information("Getting Activities Report");
+        
+        var htmlData = "";
+        
+        var consumedTestData = false;
+        
+        if (consumeTestData)
+        {
+            if (File.Exists("expeditionsReport.html"))
+            {
+                htmlData = File.ReadAllText("expeditionsReport.html");
+                consumedTestData = true;
+            }
+        }
+        
+        switch (consumedTestData)
+        {
+            case false when overrideData == null:
+            {
+                var reportRequest = new RequestDto()
+                {
+                    EndPointDto = Endpoints.ExpeditionAllocation
+                };
+        
+                var reportResponse = reportRequest.RunRequest();
+                htmlData = await reportResponse!.Content.ReadAsStringAsync();
+                if (saveDataForTest) await File.WriteAllTextAsync("expeditionsReport.html", htmlData);
+                break;
+            }
+            case false:
+                htmlData = overrideData;
+                break;
+        }
+        
+        var htmlDoc = new HtmlDocument();
+        
+        htmlDoc.LoadHtml(htmlData);
+
+        var table = htmlDoc.DocumentNode
+            .ChildNodes.FindFirst("table");
+        
+        Log.Debug($"Found {table.ChildNodes.Count} html nodes");
+        
+        try
+        {
+            foreach (var node in table.ChildNodes)
+            {
+                var participantInfo = node.ChildNodes;
+                
+                if (participantInfo.Count < 2) continue;
+            
+                int idAsNo = 0;
+                try
+                {
+                    var id = participantInfo[1].InnerHtml.Split(",")[0].TrimFormatting();
+                    if (!int.TryParse(id, out idAsNo)) continue;
+                }
+                catch (Exception e)
+                {
+                    Log.Warning($"Error {e.Message}");
+                    continue;
+                }
+
+                var expeditionRaw = participantInfo[15].InnerHtml.TrimFormatting();;
+
+                if (!expeditionRaw.Contains('-')) continue;
+
+                var brokenExpedition = expeditionRaw.Split("-");
+
+                dataModel
+                    .Participants
+                    .FirstOrDefault(pt => pt.EventId.Equals(idAsNo))!
+                    .Expedition = brokenExpedition[0];
+                
+                dataModel
+                    .Participants
+                    .FirstOrDefault(pt => pt.EventId.Equals(idAsNo))!
+                    .ExpeditionUnit = brokenExpedition[1];
+
+            }
+        }
+        catch (Exception e)
+        { 
+            Log.Error(e.Message);
+        }
+
+    }
+    
+
+    
 }
