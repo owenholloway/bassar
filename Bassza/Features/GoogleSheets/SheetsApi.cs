@@ -255,6 +255,35 @@ public class SheetsApiManager
         
     }
     
+    public async Task UpdateLiabilityPayments(List<Payment> payments)
+    {
+        payments.Sort((x, y)
+            => x.DueDate.CompareTo(y.DueDate));
+        
+        var dateList = payments
+            .Select(pt => pt.DueDate.ToString("yyyy/MM/dd"))
+            .Cast<object>().ToList();
+        
+        var valueList = payments.Select(pt => pt.DueValue)
+            .Cast<object>().ToList();
+        
+        var itemList = payments.Select(pt => pt.PaymentName)
+            .Cast<object>().ToList();
+        
+        await Signals.Requestors.WaitAsync();
+
+        if (!IsActive) return;
+        Log.Information("UpdateLiabilityPayments Start");
+        
+        await UpdateRow("A", "LiabilityPayments", dateList, "Due");
+        await UpdateRow("B", "LiabilityPayments", valueList, "Value");
+        await UpdateRow("C", "LiabilityPayments", itemList, "Item");
+
+        Log.Information("UpdateLiabilityPayments End");
+        Signals.ResetRequestor();
+        
+    }
+    
     private async Task SetColumnName(
         string column, 
         string sheetName,
