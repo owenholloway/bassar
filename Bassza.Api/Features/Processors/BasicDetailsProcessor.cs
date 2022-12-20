@@ -360,7 +360,7 @@ public static class BasicDetailsProcessor
                                 currentFinancialPosition.ExpeditionPayment2 = (double)payment.ReceivedValue;
                         }
 
-                        if (payment.PaymentName.Equals("Expedition Payment 3"))
+                        if (payment.PaymentName.Contains("Expedition Payment 3"))
                         {
                             currentFinancialPosition.Expedition += payment.DueValue;
                             if (!payment.IsOutstanding) 
