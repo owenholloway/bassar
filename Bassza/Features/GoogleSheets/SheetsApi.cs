@@ -124,7 +124,6 @@ public class SheetsApiManager
         
     }
 
-
     public async Task UpdateFinancialPosition(IntegratedPosition position)
     {
         await Signals.Requestors.WaitAsync();

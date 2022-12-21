@@ -41,7 +41,7 @@ public static class OffsiteExtensions
         var nameList = model.Select(pt => pt.ParticipantName).Cast<object>().ToList();
         await apiManager.UpdateRow("B", "OffsiteFullDay", nameList, "Name");
         var offsiteList = model.Select(pt => pt.Activity.Name).Cast<object>().ToList();
-        await apiManager.UpdateRow("c", "OffsiteFullDay", offsiteList, "Activity");
+        await apiManager.UpdateRow("B", "OffsiteFullDay", offsiteList, "Activity");
         var dayList = model.Select(pt => pt.Activity.Day.DayOfWeek.ToString()).Cast<object>().ToList();
         await apiManager.UpdateRow("D", "OffsiteFullDay", dayList, "Day");
         
@@ -49,5 +49,64 @@ public static class OffsiteExtensions
         Log.Information("UpdateOffsiteFullDaySheet End");
         Signals.ResetRequestor();
         
+    }
+    
+    public static async Task UpdateOffsiteEmails(this SheetsApiManager apiManager, OlemsDataModel dataModel)
+    {
+        if (!apiManager.IsActive) return;
+        
+        var report = dataModel
+            .Participants
+            .Where(pt => pt.OffsiteActivities.Any());
+
+        var model = new List<OffsiteInfo>();
+        
+        foreach (var participant in report)
+        {
+            foreach (var participantOffsiteActivity in participant.OffsiteActivities)
+            {
+                model.Add(new OffsiteInfo()
+                {
+                    ParticipantId = participant.EventId,
+                    ParticipantName = participant.Name,
+                    ParticipantEmail = participant.EmailPrimary,
+                    Activity = participantOffsiteActivity,
+                    NameDaySession = $"{participantOffsiteActivity.Name} " +
+                                     $"| {participantOffsiteActivity.Day.DayOfWeek} " +
+                                     $"| {participantOffsiteActivity.Session}"
+                });
+            }
+        }
+
+        var grouped = model
+            .GroupBy(oi => oi.NameDaySession)
+            .OrderBy(oi => oi.Key);
+
+        var colA = new List<object>();
+        var colB = new List<object>();
+        
+        foreach (var offsiteInfos in grouped)
+        {
+            colA.Add(offsiteInfos.Key);
+            colB.Add("");
+            foreach (var offsiteInfo in offsiteInfos)
+            {
+                colA.Add(offsiteInfo.ParticipantName);
+                colB.Add(offsiteInfo.ParticipantEmail);
+            }
+            colA.Add("");
+            colB.Add("");
+        }
+        
+        
+        await apiManager.UpdateRow("A", "OffsiteEmails", colA, "Name");
+        
+        await apiManager.UpdateRow("B", "OffsiteEmails", colB, "Email");
+        
+        await Signals.Requestors.WaitAsync();
+        Log.Information("UpdateOffsiteEmails Start");
+        
+        Log.Information("UpdateOffsiteEmails End");
+        Signals.ResetRequestor();
     }
 }

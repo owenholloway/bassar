@@ -10,4 +10,6 @@ public class OffsiteInfo
     
     public OffsiteActivity Activity { get; set; }
     public MedicalInformation MedicalInformation { get; set; }
+
+    public string NameDaySession = "NA";
 }
