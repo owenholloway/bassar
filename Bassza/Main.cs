@@ -4,6 +4,7 @@ using Bassza.Api.Dtos.Participant;
 using Bassza.Api.Features;
 using Bassza.Api.Features.Processors;
 using Bassza.Features;
+using Bassza.Features.CsvOutput;
 using Bassza.Features.GoogleSheets;
 using Bassza.Features.Reporting;
 using Google.Apis.Sheets.v4.Data;
@@ -41,7 +42,7 @@ public class Main
             Password = _options.Password
         });
 
-        var consumeTestData = false;
+        var consumeTestData = true;
         
         var loggedIn = false;
         
@@ -72,6 +73,8 @@ public class Main
         await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
         await dataModel.ProcessTransportDetails(saveDataForTest: true, consumeTestData: consumeTestData);
+        await Task.Delay(200);
+        await dataModel.ProcessOffsiteExpeditions(saveDataForTest: true, consumeTestData: consumeTestData);
         
         var model = dataModel.CalculatePosition();
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
@@ -88,6 +91,10 @@ public class Main
             .Where(pt => pt.ReceivedValue != null && pt.ReceivedDate != null)
             .ToList();
 
+        dataModel.PrepareExpeditionPdfReports();
+        
+        return;
+        
         var updateTasks = new List<Task>();
         
         updateTasks.Add(_sheetsApiManager.UpdateTravelDetails(dataModel));

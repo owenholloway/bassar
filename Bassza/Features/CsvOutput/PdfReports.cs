@@ -1,5 +1,6 @@
 using System.Text;
 using Bassza.Api.Dtos;
+using Bassza.Api.Dtos.Participant;
 using Serilog;
 
 namespace Bassza.Features.CsvOutput;
@@ -16,20 +17,24 @@ public static class PdfReports
 
        if (!Directory.Exists("ExpeditionReports")) Directory.CreateDirectory("ExpeditionReports");
        
-       var template = File.ReadAllText("ReportTemplates/Expedition.html");
-       var participantTemplate = File.ReadAllText("ReportTemplates/Expedition.Participant.html");
+
        
        foreach (var participants in expedGrouping)
-       {
+       {      
+           var template = File.ReadAllText("ReportTemplates/Expedition.html");
+           var participantTemplate = File.ReadAllText("ReportTemplates/Expedition.Participant.html");
+           var noteTemplate = File.ReadAllText("ReportTemplates/Expedition.Note.html");
            Log.Information($"Writing out {participants.Key}");
            var participantData = new StringBuilder();
-           var participantMedical = new StringBuilder();
+           var participantNote = new StringBuilder();
            
-           participantMedical.Append("Note No,Name,Type,Details\n");
-
            var noteNo = 1;
+
+           var sortedParticipants 
+               = participants
+               .OrderBy(pt => pt.Name);
            
-           foreach (var participant in participants)
+           foreach (var participant in sortedParticipants)
            {
                var model = participantTemplate;
 
@@ -41,6 +46,56 @@ public static class PdfReports
 
                foreach (var medicalInformation in participant.MedicalInformation)
                {
+                   var note = noteTemplate;
+
+                   note = note.Replace("&note.no&", noteNo.ToString("000"));
+                   note = note.Replace("&note.type&", medicalInformation.MedicalInformationType.ToString());
+                   var detail = new StringBuilder();
+                   
+                   if (medicalInformation.MedicalInformationType == MedicalInformationType.MedicalCondition)
+                   {
+                       detail.Append(medicalInformation.Name);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.FurtherInformation);
+                   }
+                   
+                   if (medicalInformation.MedicalInformationType == MedicalInformationType.Medication)
+                   {
+                       detail.Append(medicalInformation.Name);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.Dosage);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.MethodOfAdministration);
+                   }
+                   
+                   if (medicalInformation.MedicalInformationType == MedicalInformationType.MedicalAid)
+                   {
+                       detail.Append(medicalInformation.Name);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.Reason);
+                   }
+                   
+                   if (medicalInformation.MedicalInformationType == MedicalInformationType.Allergies)
+                   {
+                       detail.Append(medicalInformation.Name);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.Reaction);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.Treatment);
+                   }
+                   
+                   if (medicalInformation.MedicalInformationType == MedicalInformationType.DietaryRequirements)
+                   {
+                       detail.Append(medicalInformation.Name);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.DietCode);
+                       detail.Append("<br>");
+                       detail.Append(medicalInformation.Information);
+                   }
+
+                   note = note.Replace("&note.details&", detail.ToString());
+
+                   participantNote.Append(note);
 
                }
 
@@ -56,12 +111,13 @@ public static class PdfReports
                }
 
                participantData.Append(model);
-               
-
            }
+
+           template = template.Replace("&expedition.name&", participants.Key);
+           template = template.Replace("&participant.info&", participantData.ToString());
+           template = template.Replace("&note.info&", participantNote.ToString());
            
-           File.WriteAllText("ExpeditionReports/" + participants.Key + ".html", 
-               template.Replace("&participant.info&", participantData.ToString()));
+           File.WriteAllText("ExpeditionReports/" + participants.Key.Trim().Replace(".","") + ".html", template);
 
        }
     }

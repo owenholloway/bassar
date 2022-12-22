@@ -5,38 +5,75 @@
     <title></title>
 
     <style>
+        @page {
+            size: A4;
+        }
+        @page :left {
+            margin-left: 0.8cm;
+        }
+        @page :right {
+            margin-left: 0.8cm;
+        }
+        h1, h3 {
+            page-break-before: always;
+        }
         table, th, th {
             border: 1px solid;
         }
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            width: 100%;
+        }
+        .styled-table thead tr {
+            background-color: #A5A5DB;
+            color: #000000;
+        }
+        .styled-table th,
+        .styled-table td {
+            padding: 5px 8px;
+        }
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
     </style>
 
 </head>
 <body>
 
     <h3>Expedition</h3>
-    <h5>&ExpeditionName&</h5>
+    <h5>&expedition.name&</h5>
 
-    <table>
-        
-        <tr>
-            <th>
-                Moot ID
-            </th>
-            <th>
-                First Name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                Contingent
-            </th>
-            <th>
-                Note No
-            </th>
-        </tr>
-        &participant.info&
+    <h5>Participants</h5>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Moot ID</th><th>Last Name</th><th>First Name</th><th>Contingent</th><th>Note No</th>
+            </tr>
+        </thead>
+        <tbody>
+&participant.info&
+        </tbody>
     </table>
+
+    <h3></h3>
+    <h5>Notes</h5>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Note No</th><th>Type</th><th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+&note.info&
+        </tbody>
+    </table>   
 
 </body>
 </html>
