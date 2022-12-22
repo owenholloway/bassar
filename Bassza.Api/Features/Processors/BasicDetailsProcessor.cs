@@ -392,6 +392,11 @@ public static class BasicDetailsProcessor
                             payment.ReceivedDate = DateOnly.Parse(receivedDate);
                         }
 
+                        if (payment.DueValue == 0)
+                        {
+                            payment.ReceivedDate = payment.DueDate;
+                        }
+
                         if (receivedValue.Length > 3)
                         {
                             payment.ReceivedValue = receivedValue.TryParseToDouble();
@@ -451,11 +456,16 @@ public static class BasicDetailsProcessor
                         if (payment.PaymentName.Contains("Expedition Payment 3"))
                         {
                             currentFinancialPosition.Expedition += payment.DueValue;
-                            if (!payment.IsOutstanding) 
-                                currentFinancialPosition.Expedition3Complete = true;
+
+                            var noPaymentThreeOutstanding = currentFinancialPosition
+                                .Payments
+                                .Where(py => py.PaymentName.Contains("Expedition Payment 3"))
+                                .All(py => !py.IsOutstanding);
+                            
+                            currentFinancialPosition.Expedition3Complete = noPaymentThreeOutstanding;
                             
                             if (payment.ReceivedValue != null) 
-                                currentFinancialPosition.ExpeditionPayment3 = (double)payment.ReceivedValue;
+                                currentFinancialPosition.ExpeditionPayment3 += (double)payment.ReceivedValue;
                         }
                         
                     }

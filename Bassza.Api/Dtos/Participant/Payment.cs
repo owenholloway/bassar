@@ -12,7 +12,7 @@ public class Payment
     public DateOnly? ReceivedDate { get; set; }
     public double? ReceivedValue { get; set; }
 
-    public bool IsOutstanding => ReceivedDate == null || DueValue > ReceivedValue;
+    public bool IsOutstanding => ReceivedDate == null || (DueValue > ReceivedValue && DueValue != 0);
     
     public string PaymentIdOrComment { get; set; }
 }

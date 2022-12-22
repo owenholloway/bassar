@@ -105,7 +105,7 @@ public class SheetsApiManager
         await UpdateRow("N", "Participants", payedExped2List, "Exped 2");
 
         var payedExped3List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition3Complete).Cast<object>().ToList();
-        await UpdateRow("O", "Participants", payedExped2List, "Exped 3");
+        await UpdateRow("O", "Participants", payedExped3List, "Exped 3");
         
         var expedFeeSumList = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeCompletedSum).Cast<object>().ToList();
         await UpdateRow("P", "Participants", expedFeeSumList, "Exped Paid");
