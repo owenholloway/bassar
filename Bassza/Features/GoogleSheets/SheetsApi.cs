@@ -124,6 +124,56 @@ public class SheetsApiManager
         
     }
 
+    public async Task UpdateTravelDetails(OlemsDataModel dataModel)
+    {
+        await Signals.Requestors.WaitAsync();
+        var sheetName = "TravelDetails";
+        if (!IsActive) return;
+        Log.Information("UpdateTravelDetails Start");
+
+        var contingentGroupings = dataModel.Participants.GroupBy(pt => pt.Contingent);
+        
+        var colA = new List<object>();
+        var colB = new List<object>();
+        var colC = new List<object>();
+        var colD = new List<object>();
+        var colE = new List<object>();
+        
+        foreach (var grouping in contingentGroupings)
+        {
+            colA.Add(grouping.Key);
+            colB.Add(grouping.Key);
+            colC.Add(grouping.Key);
+            colD.Add(grouping.Key);
+            colE.Add(grouping.Key);
+
+            foreach (var participant in grouping)  
+            {
+                colA.Add(participant.EventId);
+                colB.Add(participant.Name);
+                colC.Add(participant.TravelToMoot);
+                colD.Add(participant.TravelFromMoot);
+                colE.Add(participant.PickupLocation);
+            }
+            
+            colA.Add("");
+            colB.Add("");
+            colC.Add("");
+            colD.Add("");
+            colE.Add("");
+        }
+
+        await UpdateRow("A", sheetName, colA, "Id");
+        await UpdateRow("B", sheetName, colB, "Name");
+        await UpdateRow("C", sheetName, colC, "Travel To");
+        await UpdateRow("D", sheetName, colD, "Travel From");
+        await UpdateRow("E", sheetName, colE, "Pickup Location");
+
+        Log.Information("UpdateTravelDetails End");
+        Signals.ResetRequestor();
+        
+    }
+    
     public async Task UpdateFinancialPosition(IntegratedPosition position)
     {
         await Signals.Requestors.WaitAsync();

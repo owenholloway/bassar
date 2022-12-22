@@ -105,6 +105,16 @@ namespace Bassza.Api.Features
             FunctionType = FunctionTypeEnum.GET,
             Function = "Report-Payments.asp"
         };
+        
+        public static EndPointDto TravelDetails = new EndPointDto()
+        {
+            FunctionType = FunctionTypeEnum.GET,
+            Function = "Report-Template.asp",
+            UrlData = new Dictionary<string, string>()
+            {
+                {"RTID","43"}
+            }
+        };
 
     }
 }

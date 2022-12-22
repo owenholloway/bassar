@@ -170,6 +170,8 @@ public static class BasicDetailsProcessor
             
             var preferredName = participantInfo[11].InnerHtml.TrimFormatting();
 
+            if (preferredName.Length < 2) continue;
+            
             dataModel.Participants
                 .FirstOrDefault(pt => pt.EventId == idAsNo)!
                 .NameFirst = preferredName;
@@ -180,6 +182,92 @@ public static class BasicDetailsProcessor
         
     }
 
+        public static async Task ProcessTransportDetails(
+        this OlemsDataModel dataModel, 
+        string? overrideData = null, 
+        bool saveDataForTest = false,
+        bool consumeTestData = false)
+    {        
+        Log.Information("Getting Transport Details");
+
+        var htmlData = "";
+
+        var consumedTestData = false;
+        
+        if (consumeTestData)
+        {
+            if (File.Exists("transportDetails.html"))
+            {
+                htmlData = File.ReadAllText("transportDetails.html");
+                consumedTestData = true;
+            }
+        }
+        
+        switch (consumedTestData)
+        {
+            case false when overrideData == null:
+            {
+                var reportRequest = new RequestDto()
+                {
+                    EndPointDto = Endpoints.TravelDetails
+                };
+        
+                var medicalReportResponse = reportRequest.RunRequest();
+                htmlData = await medicalReportResponse!.Content.ReadAsStringAsync();
+                if (saveDataForTest) await File.WriteAllTextAsync("transportDetails.html", htmlData);
+                break;
+            }
+            case false:
+                htmlData = overrideData;
+                break;
+        }
+        
+        var htmlDoc = new HtmlDocument();
+        
+        htmlDoc.LoadHtml(htmlData);
+
+        var table = htmlDoc.DocumentNode
+            .ChildNodes.FindFirst("table");
+
+        foreach (var node in table.ChildNodes)
+        {
+            var participantInfo = node.ChildNodes;
+            if (participantInfo.Count < 2) continue;
+            
+            int idAsNo = 0;
+            try
+            {
+                var id = participantInfo[1].InnerHtml.TrimFormatting();
+                if (!TryParse(id, out idAsNo)) continue;
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"Error {e.Message}");
+                continue;
+            }
+            
+            var travelToMoot = participantInfo[23].InnerHtml.TrimFormatting();
+            
+            var travelFromMoot = participantInfo[25].InnerHtml.TrimFormatting();
+            
+            var pickupLocation = participantInfo[27].InnerHtml.TrimFormatting();
+
+            dataModel.Participants
+                .FirstOrDefault(pt => pt.EventId == idAsNo)!
+                .TravelToMoot = travelToMoot;
+            dataModel.Participants
+                .FirstOrDefault(pt => pt.EventId == idAsNo)!
+                .TravelFromMoot = travelFromMoot;
+            dataModel.Participants
+                .FirstOrDefault(pt => pt.EventId == idAsNo)!
+                .PickupLocation = pickupLocation;
+
+        }
+        
+        dataModel.Participants = dataModel.Participants.OrderBy(pt => pt.EventId).ToList();
+        
+    }
+        
         public static async Task ProcessPayment(
         this OlemsDataModel dataModel, 
         string? overrideData = null, 

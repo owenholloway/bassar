@@ -46,4 +46,10 @@ public class Participant
     
     public IEnumerable<MedicalInformation> MedicalInformation = new List<MedicalInformation>();
 
+    // Travel
+    public string TravelToMoot { get; set; } = string.Empty;
+    public string TravelFromMoot { get; set; } = string.Empty;
+    public string PickupLocation { get; set; } = string.Empty;
+
+
 }

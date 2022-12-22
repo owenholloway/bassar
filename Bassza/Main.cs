@@ -43,7 +43,7 @@ public class Main
 
         var consumeTestData = false;
         
-        var loggedIn = consumeTestData;
+        var loggedIn = false;
         
         if (!loggedIn) loggedIn = olemsSession.LoginOpen(_totpManager.GetTotp());
 
@@ -70,7 +70,9 @@ public class Main
         await dataModel.ProcessMedicalReportResponse(saveDataForTest: true, consumeTestData: consumeTestData);
         await Task.Delay(200);
         await dataModel.ProcessOffsiteActivies(saveDataForTest: true, consumeTestData: consumeTestData);
-
+        await Task.Delay(200);
+        await dataModel.ProcessTransportDetails(saveDataForTest: true, consumeTestData: consumeTestData);
+        
         var model = dataModel.CalculatePosition();
         var offsiteFlagged = dataModel.Participants.Where(pt => pt.OffsiteDiscrepancy);
         var fullDietary = dataModel.ProcessDietaries();
@@ -87,7 +89,8 @@ public class Main
             .ToList();
 
         var updateTasks = new List<Task>();
-
+        
+        updateTasks.Add(_sheetsApiManager.UpdateTravelDetails(dataModel));
         updateTasks.Add(_sheetsApiManager.UpdateFinancialPosition(model));
         updateTasks.Add(_sheetsApiManager.UpdateDebitedPayments(debitedPayments));
         updateTasks.Add(_sheetsApiManager.UpdateDataModel(dataModel));
@@ -96,8 +99,7 @@ public class Main
         updateTasks.Add(_sheetsApiManager.UpdateOffsiteFullDaySheet(dataModel));
         updateTasks.Add(_sheetsApiManager.UpdateOffsiteEmails(dataModel));
         updateTasks.Add(_sheetsApiManager.UpdateOffsiteTourDietariesSheet(offSiteDietaryReport));
-        
-        
+
         //updateTasks.Add(_sheetsApiManager.UpdateLiabilityPayments(paymentsGrouped.ToList()));
         
         foreach (var updateTask in updateTasks)
