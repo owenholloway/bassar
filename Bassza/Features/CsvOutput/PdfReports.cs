@@ -1,6 +1,7 @@
 using System.Text;
 using Bassza.Api.Dtos;
 using Bassza.Api.Dtos.Participant;
+using Bassza.ReportTemplates;
 using Serilog;
 
 namespace Bassza.Features.CsvOutput;
@@ -15,9 +16,8 @@ public static class PdfReports
                .Where(pt => !pt.Expedition.Contains("No Expedition"))
                .GroupBy(pt => pt.Expedition);
 
-       if (!Directory.Exists("ExpeditionReports")) Directory.CreateDirectory("ExpeditionReports");
-       
-
+       if (!Directory.Exists("ExpeditionHtmlReports")) Directory.CreateDirectory("ExpeditionHtmlReports");
+       if (!Directory.Exists("ExpeditionPdfReports")) Directory.CreateDirectory("ExpeditionPdfReports");
        
        foreach (var participants in expedGrouping)
        {      
@@ -116,8 +116,22 @@ public static class PdfReports
            template = template.Replace("&expedition.name&", participants.Key);
            template = template.Replace("&participant.info&", participantData.ToString());
            template = template.Replace("&note.info&", participantNote.ToString());
+
+           var htmlFilePath = "./ExpeditionHtmlReports/" 
+                              + participants.Key.Trim()
+                                  .Replace(".", "")
+                                  .Replace(" ","") + ".html";
            
-           File.WriteAllText("ExpeditionReports/" + participants.Key.Trim().Replace(".","") + ".html", template);
+           var pdfFilePath = "./ExpeditionPdfReports/" 
+                              + participants.Key.Trim()
+                                  .Replace(".", "")
+                                  .Replace(" ","") + ".pdf";
+           
+           File.WriteAllText(htmlFilePath, template);
+           
+           WkhtmltoPdfRunner.Run("wkhtmltopdf", $"{htmlFilePath} {pdfFilePath}");
+           
+           
 
        }
     }

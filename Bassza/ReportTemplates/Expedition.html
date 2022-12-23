@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <title></title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <style> 
+        @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap'); 
+    </style>
     <style>
+        html {
+            font-family: 'Raleway', sans-serif;
+        }
         @page {
             size: A4;
         }
@@ -41,29 +50,58 @@
         .styled-table tbody tr:nth-of-type(even) {
             background-color: #f3f3f3;
         }
+        
+        .center {
+            text-align: center;
+        }
+        
+        .aimLogo {
+            max-width: 400px;
+            max-height: 400px;
+        }
 
     </style>
 
 </head>
 <body>
-
-    <h3>Expedition</h3>
-    <h5>&expedition.name&</h5>
-
-    <h5>Participants</h5>
+    <div class="center">
+        <h1 style="padding-top: 20px;  font-size: 42px">Apple Isle Moot</h1>
+        <h2 style="padding-top: 20px">Expedition Pack</h2>
+        <img style="padding-top: 20px" class="aimLogo" src="https://shop.appleislemoot.com.au/wp-content/uploads/2022/12/AIMMainColour.png" >
+        <h2 style="padding-top: 20px">&expedition.name&</h2>
+        <p style="padding-top: 20px; font-size: 20px">
+            This document contains sensitive Personally Idenfiable Information and remains property of 
+            Scouts Australia Tasmania Branch (ABN: 88 436 518 233) and must be returned once activities have
+            been completed. 
+        </p>
+        <p style="padding-top: 20px; font-size: 20px">
+            Moot Phone No: <b>0491 893 467</b>
+        </p>
+        <p style="font-size: 20px">
+            Police/Fire/Abulance: <b>000</b>
+        </p>
+        <p style="font-size: 20px">
+            Tasmania Police Assistance: <b>131 444</b>
+        </p>
+    </div>
+    
+    <h3>Participants</h3>
+    
     <table class="styled-table">
         <thead>
             <tr>
-                <th>Moot ID</th><th>Last Name</th><th>First Name</th><th>Contingent</th><th>Note No</th>
+                <th>Moot ID</th><th>First Name</th><th>Last Name</th><th>Contingent</th><th>Note No</th>
             </tr>
         </thead>
         <tbody>
 &participant.info&
         </tbody>
     </table>
+    <p style="padding-top: 8px; font-size: 18px">
+        These names may contain preferred names. If legal names are required please confirm with participants.
+    </p>
 
-    <h3></h3>
-    <h5>Notes</h5>
+    <h3>Notes</h3>
     <table class="styled-table">
         <thead>
             <tr>
