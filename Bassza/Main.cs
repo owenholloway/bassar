@@ -42,7 +42,7 @@ public class Main
             Password = _options.Password
         });
 
-        var consumeTestData = true;
+        var consumeTestData = false;
         
         var loggedIn = false;
         
@@ -91,10 +91,9 @@ public class Main
             .Where(pt => pt.ReceivedValue != null && pt.ReceivedDate != null)
             .ToList();
 
-        dataModel.PrepareExpeditionPdfReports();
-        
-        return;
-        
+        //This is disable in container as it has nowhere to store the reports
+        //dataModel.PrepareExpeditionPdfReports();
+
         var updateTasks = new List<Task>();
         
         updateTasks.Add(_sheetsApiManager.UpdateTravelDetails(dataModel));
