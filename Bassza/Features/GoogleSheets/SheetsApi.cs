@@ -112,12 +112,12 @@ public class SheetsApiManager
         var expedFeeOwed = dataModel.Participants.Select(value => value.FinancialPosition.ExpeditionFeeOwed).Cast<object>().ToList();
         await UpdateRow("Q", "Participants", expedFeeOwed, "Exped Owed");
         
-        // var payedExped3List = dataModel.Participants.Select(value => value.FinancialPosition.Expedition3Complete).Cast<object>().ToList();
-        // await UpdateRow("O", "Participants", payedExped3List, "Exped 3");
-        
-        // var  = dataModel.Participants.Select(value => value.EmailPrimary).Cast<object>().ToList();
-        // await UpdateRow("E", "Participants", emailList, "Email");
+        var haveTentPayment = dataModel.Participants.Select(value => value.FinancialPosition.HaveTentPayment).Cast<object>().ToList();
+        await UpdateRow("R", "Participants", haveTentPayment, "Have Tent Payment");
 
+        var tentPaymentCompleted = dataModel.Participants.Select(value => value.FinancialPosition.TentPaymentComplete)
+            .Cast<object>().ToList();
+        await UpdateRow("S", "Participants", tentPaymentCompleted, "Tent Payment Complete");
         
         Log.Information("UpdateDataModel End");
         Signals.ResetRequestor();

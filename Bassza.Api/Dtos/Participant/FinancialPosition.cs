@@ -35,6 +35,8 @@ public class FinancialPosition
 
     public double Refunds { get; set; } = 0.00;
 
+    public bool HaveTentPayment = false;
+    public bool TentPaymentComplete = false;
 
     public double Paid => BasePaymentTotal +
                           ExpeditionPaymentTotal;
