@@ -468,7 +468,7 @@ public static class BasicDetailsProcessor
                                 currentFinancialPosition.ExpeditionPayment3 += (double)payment.ReceivedValue;
                         }
                         
-                        if (payment.PaymentName.ToLower().Equals("Tent Fee"))
+                        if (payment.PaymentName.ToLower().Equals("tent fee"))
                         {
                             currentFinancialPosition.HaveTentPayment = true;
                             if (!payment.IsOutstanding) 
