@@ -304,6 +304,41 @@ public class SheetsApiManager
         
     }
     
+    public async Task UpdateSquarePayments(List<Payment> payments)
+    {
+        var squarePayments = payments
+            .Where(pt => pt.PaymentIdOrComment.ToLower().Contains("square"))
+            .ToList();
+
+        squarePayments.Sort((x, y)
+            => x.ReceivedDate!.Value.CompareTo(y.ReceivedDate!.Value));
+        
+        var dateList = squarePayments.Select(pt => ((DateOnly)pt.ReceivedDate!)
+            .ToString("yyyy/MM/dd")).Cast<object>().ToList();
+        
+        var valueList = squarePayments.Select(pt => pt.ReceivedValue)
+            .Cast<object>().ToList();
+        
+        var itemList = squarePayments.Select(pt => pt.PaymentName)
+            .Cast<object>().ToList();
+        
+        var descriptionList = squarePayments.Select(pt => pt.PaymentIdOrComment)
+            .Cast<object>().ToList();
+        await Signals.Requestors.WaitAsync();
+
+        if (!IsActive) return;
+        Log.Information("UpdateDebitedPayments Start");
+        
+        await UpdateRow("A", "SquarePayments", dateList, "Received");
+        await UpdateRow("B", "SquarePayments", valueList, "Value");
+        await UpdateRow("C", "SquarePayments", itemList, "Item");
+        await UpdateRow("D", "SquarePayments", descriptionList, "Description");
+
+        Log.Information("UpdateDebitedPayments End");
+        Signals.ResetRequestor();
+        
+    }
+    
     public async Task UpdateLiabilityPayments(List<Payment> payments)
     {
         payments.Sort((x, y)
