@@ -324,6 +324,9 @@ public class SheetsApiManager
         
         var descriptionList = squarePayments.Select(pt => pt.PaymentIdOrComment)
             .Cast<object>().ToList();
+        
+        var mootIdList = squarePayments.Select(pt => pt.MootId)
+            .Cast<object>().ToList();
         await Signals.Requestors.WaitAsync();
 
         if (!IsActive) return;
@@ -333,6 +336,7 @@ public class SheetsApiManager
         await UpdateRow("B", "SquarePayments", valueList, "Value");
         await UpdateRow("C", "SquarePayments", itemList, "Item");
         await UpdateRow("D", "SquarePayments", descriptionList, "Description");
+        await UpdateRow("E", "SquarePayments", mootIdList, "MootId");
 
         Log.Information("UpdateDebitedPayments End");
         Signals.ResetRequestor();
