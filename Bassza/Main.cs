@@ -99,6 +99,7 @@ public class Main
         updateTasks.Add(_sheetsApiManager.UpdateTravelDetails(dataModel));
         updateTasks.Add(_sheetsApiManager.UpdateFinancialPosition(model));
         updateTasks.Add(_sheetsApiManager.UpdateDebitedPayments(debitedPayments));
+        updateTasks.Add(_sheetsApiManager.UpdateSquarePayments(debitedPayments));
         updateTasks.Add(_sheetsApiManager.UpdateDataModel(dataModel));
         updateTasks.Add(_sheetsApiManager.UpdateDietariesSheet(fullDietary));
         updateTasks.Add(_sheetsApiManager.UpdateOffsiteDietariesSheet(offSiteDietaryReport));
